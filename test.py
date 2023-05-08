@@ -36,20 +36,20 @@ def update_core_usage(graph, core):
         graph.plot(XARR, CPU_USAGE_DATA[core], color='#3c95c7')
         graph.fill_between(XARR, np.array(CPU_USAGE_DATA[core]), 0, where=np.array(CPU_USAGE_DATA[core])>=0, interpolate=True, color='#f1f6fa', alpha=1)
         time.sleep(REFRESH_RATE)
-        
+
 def print_thread_status():
     while True:
         for thread in threading.enumerate():
             if thread.name != 'Status-Thread':
                 print(f"{thread.name}: {thread.is_alive()}")
                 time.sleep(REFRESH_RATE)
-        
+
 def redraw(canvas):
     while True:
         if canvas:
             canvas.draw()
             time.sleep(REFRESH_RATE)
-        
+
 class CPUUsageGraph(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -64,7 +64,7 @@ class CPUUsageGraph(tk.Tk):
 
         # Threads
         self.core_threads = {'started': False}
-        
+
         # LEFT
         self.left = tk.Frame(self, bg="green")
         self.left.grid(column=0, row=0, sticky=tk.NSEW, rowspan=3)
@@ -146,19 +146,19 @@ class CPUUsageGraph(tk.Tk):
         self.core_threads[graph] = threading.Thread(target=update_core_usage, args=(graph,i,), name=f'Core{i}-Thread')
         self.core_threads[graph].daemon = True
         self.core_threads[graph].start()
-            
+
         # Start a new thread for thread-status
         self.status_thread = threading.Thread(target=print_thread_status, name='Status-Thread')
         self.status_thread.daemon = True
         self.status_thread.start()
-        
+
         # Redraw-Thread
         # self.redraw_thread = threading.Thread(target=self.redraw, args=(canvas,), name='Redraw-Thread')
         # self.redraw_thread.daemon = True
         # self.redraw_thread.start()
-        
 
-        
+
+
     def update_graph(self):  # sourcery skip: extract-duplicate-method
         # Loop trough Plots
         #self.plots.clear()
@@ -170,7 +170,7 @@ class CPUUsageGraph(tk.Tk):
         redraw_thread = threading.Thread(target=redraw, args=(self.canvas,), name='Redraw-Thread')
         redraw_thread.daemon = True
         redraw_thread.start()
-        
+
             #print(i, self.plots[i])
             # self.plots[i].clear()
             # print(self.xarr)
@@ -178,7 +178,7 @@ class CPUUsageGraph(tk.Tk):
             # self.plots[i].plot(self.xarr, self.cpu_usage_data, color='#3c95c7')
             # self.plots[i].fill_between(self.xarr, np.array(self.cpu_usage_data), 0, where=np.array(self.cpu_usage_data)>=0, interpolate=True, color=draw_color, alpha=1)
         #self.after(REFRESH_RATE * 1000, self.update_graph)self.canvas.draw()
-        
+
         # self.ax.clear()
         #self.ax.yaxis.set_ticklabels([])    # Remove Y-Axis Labels
         #self.ax.xaxis.set_ticklabels([])    # Remove X-Axis Labels
@@ -186,9 +186,9 @@ class CPUUsageGraph(tk.Tk):
         #self.ax.set_yticks([])
 
 
-        
 
-            
+
+
 if __name__ == "__main__":
     app = CPUUsageGraph()
     app.mainloop()
